@@ -2,6 +2,7 @@ import type {
   MedicalCase,
   MedicalCaseCreate,
   MedicalCaseUpdate,
+  MedicalCaseEditData,
   Medication,
   DiaryEntry,
   DiaryEntryCreate,
@@ -307,6 +308,37 @@ export async function updateMedicalCase(
 
 export async function deleteMedicalCase(_id: string): Promise<void> {
   // no-op in dummy mode
+}
+
+export async function editMedicalCase(
+  id: string,
+  data: MedicalCaseEditData
+): Promise<MedicalCase> {
+  await new Promise((r) => setTimeout(r, 1000))
+  const existing = DUMMY_CASES.find((c) => c.id === id) ?? DUMMY_CASES[0]
+  return {
+    ...existing,
+    diagnosis: data.diagnosis,
+    diagnosis_raw: data.diagnosis_raw,
+    consultation_date: data.consultation_date,
+    updated_at: new Date().toISOString(),
+  }
+}
+
+// Get initial symptoms associated with a case (from the first diary entry or default)
+const CASE_SYMPTOMS: Record<string, string[]> = {
+  "case-1": ["dolor de garganta", "fiebre leve", "dificultad para tragar"],
+  "case-2": ["acidez estomacal", "dolor de estómago", "náuseas"],
+  "case-3": ["congestión nasal", "estornudos", "ojos llorosos"],
+  "case-4": ["sed excesiva", "cansancio", "visión borrosa"],
+  "case-5": ["dolor muscular", "rigidez lumbar", "dolor al moverse"],
+}
+
+export async function getCaseSymptomsForEdit(
+  caseId: string
+): Promise<string[]> {
+  await new Promise((r) => setTimeout(r, 200))
+  return CASE_SYMPTOMS[caseId] ?? []
 }
 
 export async function getMedicationsForCase(

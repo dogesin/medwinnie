@@ -1,1 +1,190 @@
-{"roles":["patient","admin"],"modules":[{"name":"medical_consultation","label":"Consulta Médica","business_rules":[{"id":"consultation_requires_input","trigger":"on medical_consultation.create","decision":"Bloquear — debe proporcionar al menos una foto de receta o texto descriptivo","scenario":"Paciente intenta crear una consulta sin subir receta o escribir diagnóstico"},{"id":"image_quality_validation","trigger":"on image_upload","decision":"Mostrar mensaje amable sugiriendo mejor luz o acercamiento, permitir reintentar","scenario":"La imagen de la receta está borrosa o no es legible"},{"id":"ai_explanation_generated","trigger":"after medical_consultation.create","decision":"Generar automáticamente explicación usando Gemini con los 9 bloques (Qué tienes, Por qué, Medicamentos, Tratamiento, Cuidados, Red flags, Estudios, Preguntas, Resumen)","scenario":"Se crea una consulta exitosamente"}],"permissions_by_role":{"admin":["create","read","update","delete"],"patient":["create","read"]}},{"name":"case_management","label":"Gestión de Casos","business_rules":[{"id":"case_belongs_to_one_user","trigger":"on case.create","decision":"Bloquear — cada caso pertenece exclusivamente a un usuario. Relación 1:N","scenario":"Sistema intenta asignar un caso a múltiples usuarios"},{"id":"case_auto_save","trigger":"on case.save","decision":"Guardar automáticamente sin pedir campos adicionales: fecha, diagnóstico, medicamentos, duración, explicación completa, preguntas sugeridas","scenario":"Paciente genera una explicación y pica 'Guardar este caso'"},{"id":"case_state_transitions","trigger":"on case_state.update","decision":"Permitir transiciones: en_tratamiento → mejor, igual, peor. Usuario puede cambiar estado múltiples veces","scenario":"Paciente actualiza cómo se siente"},{"id":"case_soft_delete","trigger":"on case.delete","decision":"Soft delete — marcar como eliminado pero mantener en BD para auditoría y recuperación","scenario":"Paciente elimina un caso"},{"id":"user_cannot_edit_ai_explanation","trigger":"on ai_explanation.edit","decision":"Bloquear — la explicación IA es inmutable. El usuario solo puede enriquecer con contexto propio (diario, síntomas adicionales)","scenario":"Paciente intenta editar el contenido generado por IA"},{"id":"case_enrichment_allowed","trigger":"on case.enrich","decision":"Permitir editar: síntomas adicionales, contexto personal, entradas del diario. No afecta la explicación IA","scenario":"Paciente quiere agregar contexto personal después de guardar"}],"permissions_by_role":{"admin":["create","read","update","delete"],"patient":["create","read","update"]}},{"name":"diary_tracking","label":"Diario de Evolución","business_rules":[{"id":"diary_linked_to_case","trigger":"on diary_entry.create","decision":"Cada entrada pertenece a exactamente UN caso. No hay diario genérico, todo es contextual","scenario":"Se crea una entrada de diario"},{"id":"diary_optional_enrichment","trigger":"after case.save","decision":"Mostrar pantalla: ¿Cómo te sientes hoy? (Mejor/Igual/Peor). Síntomas opcionales. Entrada de diario opcional. Todo es omitible","scenario":"Después de guardar un caso, se invita al usuario a actualizar cómo se siente"},{"id":"diary_entry_structure","trigger":"on diary_entry.create","decision":"Guardar: fecha, estado (mejor/igual/peor), síntomas seleccionados, texto libre. Mostrar como timeline dentro del caso","scenario":"Paciente agrega entrada al diario"},{"id":"diary_soft_delete","trigger":"on diary_entry.delete","decision":"Soft delete — mantener en BD pero marcar como eliminada","scenario":"Paciente elimina una entrada del diario"}],"permissions_by_role":{"admin":["create","read","update","delete"],"patient":["create","read","update"]}},{"name":"ai_chat","label":"Chat Contextualizado","business_rules":[{"id":"chat_contextual_to_case","trigger":"on chat.open","decision":"El chat SOLO responde sobre ese caso específico. La IA recibe: diagnóstico, medicamentos, historial de evolución, última entrada del diario. No es un ChatGPT abierto","scenario":"Paciente abre el chat de dudas dentro de un caso"},{"id":"chat_question_validation","trigger":"on chat.message.send","decision":"Redirigir suavemente: 'Esa duda no parece ser sobre este diagnóstico. Si quieres, puedes hacer una nueva consulta o volver a tu historial'","scenario":"Paciente hace una pregunta fuera del contexto del caso"},{"id":"chat_suggested_questions","trigger":"on chat.open","decision":"Mostrar 3-4 preguntas sugeridas contextualizadas (ej: '¿Puedo tomar esto con comida?', '¿Qué efectos secundarios debo vigilar?')","scenario":"Se abre un chat sobre un caso"},{"id":"chat_personalized_response","trigger":"on chat.message.response","decision":"Respuesta personalizada basada en el diagnóstico, medicamentos y evolución guardada del usuario. No genérica","scenario":"Paciente pregunta algo sobre su estado"},{"id":"chat_history_persistent","trigger":"on case.reopen","decision":"El historial del chat sobre ese caso se mantiene. El usuario puede ver todas sus preguntas previas","scenario":"Paciente regresa al caso después de días"}],"permissions_by_role":{"admin":["create","read","update","delete"],"patient":["create","read"]}}]}
+{
+    "roles": [
+        "patient",
+        "admin"
+    ],
+    "modules": [
+        {
+            "name": "medical_consultation",
+            "label": "Consulta Médica",
+            "business_rules": [
+                {
+                    "id": "consultation_requires_input",
+                    "trigger": "on medical_consultation.create",
+                    "decision": "Bloquear — debe proporcionar al menos una foto de receta o texto descriptivo",
+                    "scenario": "Paciente intenta crear una consulta sin subir receta o escribir diagnóstico"
+                },
+                {
+                    "id": "image_quality_validation",
+                    "trigger": "on image_upload",
+                    "decision": "Mostrar mensaje amable sugiriendo mejor luz o acercamiento, permitir reintentar",
+                    "scenario": "La imagen de la receta está borrosa o no es legible"
+                },
+                {
+                    "id": "ai_explanation_generated",
+                    "trigger": "after medical_consultation.create",
+                    "decision": "Generar automáticamente explicación usando Gemini con los 9 bloques (Qué tienes, Por qué, Medicamentos, Tratamiento, Cuidados, Red flags, Estudios, Preguntas, Resumen)",
+                    "scenario": "Se crea una consulta exitosamente"
+                }
+            ],
+            "permissions_by_role": {
+                "admin": [
+                    "create",
+                    "read",
+                    "update",
+                    "delete"
+                ],
+                "patient": [
+                    "create",
+                    "read"
+                ]
+            }
+        },
+        {
+            "name": "case_management",
+            "label": "Gestión de Casos",
+            "business_rules": [
+                {
+                    "id": "case_belongs_to_one_user",
+                    "trigger": "on case.create",
+                    "decision": "Bloquear — cada caso pertenece exclusivamente a un usuario. Relación 1:N",
+                    "scenario": "Sistema intenta asignar un caso a múltiples usuarios"
+                },
+                {
+                    "id": "case_auto_save",
+                    "trigger": "on case.save",
+                    "decision": "Guardar automáticamente sin pedir campos adicionales: fecha, diagnóstico, medicamentos, duración, explicación completa, preguntas sugeridas",
+                    "scenario": "Paciente genera una explicación y pica 'Guardar este caso'"
+                },
+                {
+                    "id": "case_state_transitions",
+                    "trigger": "on case_state.update",
+                    "decision": "Permitir transiciones: en_tratamiento → mejor, igual, peor. Usuario puede cambiar estado múltiples veces",
+                    "scenario": "Paciente actualiza cómo se siente"
+                },
+                {
+                    "id": "case_soft_delete",
+                    "trigger": "on case.delete",
+                    "decision": "Soft delete — marcar como eliminado pero mantener en BD para auditoría y recuperación",
+                    "scenario": "Paciente elimina un caso"
+                },
+                {
+                    "id": "user_cannot_edit_ai_explanation",
+                    "trigger": "on ai_explanation.edit",
+                    "decision": "Bloquear — la explicación IA es inmutable. El usuario solo puede enriquecer con contexto propio (diario, síntomas adicionales)",
+                    "scenario": "Paciente intenta editar el contenido generado por IA"
+                },
+                {
+                    "id": "case_enrichment_allowed",
+                    "trigger": "on case.enrich",
+                    "decision": "Permitir editar: síntomas adicionales, contexto personal, entradas del diario. No afecta la explicación IA",
+                    "scenario": "Paciente quiere agregar contexto personal después de guardar"
+                }
+            ],
+            "permissions_by_role": {
+                "admin": [
+                    "create",
+                    "read",
+                    "update",
+                    "delete"
+                ],
+                "patient": [
+                    "create",
+                    "read",
+                    "update"
+                ]
+            }
+        },
+        {
+            "name": "diary_tracking",
+            "label": "Diario de Evolución",
+            "business_rules": [
+                {
+                    "id": "diary_linked_to_case",
+                    "trigger": "on diary_entry.create",
+                    "decision": "Cada entrada pertenece a exactamente UN caso. No hay diario genérico, todo es contextual",
+                    "scenario": "Se crea una entrada de diario"
+                },
+                {
+                    "id": "diary_optional_enrichment",
+                    "trigger": "after case.save",
+                    "decision": "Mostrar pantalla: ¿Cómo te sientes hoy? (Mejor/Igual/Peor). Síntomas opcionales. Entrada de diario opcional. Todo es omitible",
+                    "scenario": "Después de guardar un caso, se invita al usuario a actualizar cómo se siente"
+                },
+                {
+                    "id": "diary_entry_structure",
+                    "trigger": "on diary_entry.create",
+                    "decision": "Guardar: fecha, estado (mejor/igual/peor), síntomas seleccionados, texto libre. Mostrar como timeline dentro del caso",
+                    "scenario": "Paciente agrega entrada al diario"
+                },
+                {
+                    "id": "diary_soft_delete",
+                    "trigger": "on diary_entry.delete",
+                    "decision": "Soft delete — mantener en BD pero marcar como eliminada",
+                    "scenario": "Paciente elimina una entrada del diario"
+                }
+            ],
+            "permissions_by_role": {
+                "admin": [
+                    "create",
+                    "read",
+                    "update",
+                    "delete"
+                ],
+                "patient": [
+                    "create",
+                    "read",
+                    "update"
+                ]
+            }
+        },
+        {
+            "name": "ai_chat",
+            "label": "Chat Contextualizado",
+            "business_rules": [
+                {
+                    "id": "chat_contextual_to_case",
+                    "trigger": "on chat.open",
+                    "decision": "El chat SOLO responde sobre ese caso específico. La IA recibe: diagnóstico, medicamentos, historial de evolución, última entrada del diario. No es un ChatGPT abierto",
+                    "scenario": "Paciente abre el chat de dudas dentro de un caso"
+                },
+                {
+                    "id": "chat_question_validation",
+                    "trigger": "on chat.message.send",
+                    "decision": "Redirigir suavemente: 'Esa duda no parece ser sobre este diagnóstico. Si quieres, puedes hacer una nueva consulta o volver a tu historial'",
+                    "scenario": "Paciente hace una pregunta fuera del contexto del caso"
+                },
+                {
+                    "id": "chat_suggested_questions",
+                    "trigger": "on chat.open",
+                    "decision": "Mostrar 3-4 preguntas sugeridas contextualizadas (ej: '¿Puedo tomar esto con comida?', '¿Qué efectos secundarios debo vigilar?')",
+                    "scenario": "Se abre un chat sobre un caso"
+                },
+                {
+                    "id": "chat_personalized_response",
+                    "trigger": "on chat.message.response",
+                    "decision": "Respuesta personalizada basada en el diagnóstico, medicamentos y evolución guardada del usuario. No genérica",
+                    "scenario": "Paciente pregunta algo sobre su estado"
+                },
+                {
+                    "id": "chat_history_persistent",
+                    "trigger": "on case.reopen",
+                    "decision": "El historial del chat sobre ese caso se mantiene. El usuario puede ver todas sus preguntas previas",
+                    "scenario": "Paciente regresa al caso después de días"
+                }
+            ],
+            "permissions_by_role": {
+                "admin": [
+                    "create",
+                    "read",
+                    "update",
+                    "delete"
+                ],
+                "patient": [
+                    "create",
+                    "read"
+                ]
+            }
+        }
+    ]
+}

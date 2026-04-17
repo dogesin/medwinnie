@@ -1,6 +1,7 @@
 "use client"
 
 import { use, useState } from "react"
+import { useRouter } from "next/navigation"
 import { useCaseDetail } from "@/hooks/useCaseDetail"
 import { CaseDetailHeader } from "@/components/history/CaseDetailHeader"
 import { DiaryTimeline } from "@/components/history/DiaryTimeline"
@@ -43,6 +44,7 @@ export default function CaseDetailPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = use(params)
+  const router = useRouter()
   const { medicalCase, medications, diaryEntries, isLoading, error } =
     useCaseDetail(id)
 
@@ -105,11 +107,11 @@ export default function CaseDetailPage({
   }
 
   function handleAskQuestion() {
-    window.alert(`Navegando a: /history/${id}/chat`)
+    router.push(`/history/${id}/chat`)
   }
 
   function handleEdit() {
-    window.alert(`Navegando a: /history/${id}/edit`)
+    router.push(`/history/${id}/edit`)
   }
 
   function handleShare() {
@@ -129,7 +131,7 @@ export default function CaseDetailPage({
   }
 
   function handleAddDiaryEntry() {
-    window.alert(`Navegando a: /history/${id}/diary`)
+    router.push(`/history/${id}/diary`)
   }
 
   // ─── Main view ────────────────────────────────────────────

@@ -38,6 +38,14 @@ export interface MedicalCaseUpdate {
   current_health_status?: HealthStatus
 }
 
+// Fields the user can edit without modifying the AI explanation
+export interface MedicalCaseEditData {
+  diagnosis: string
+  diagnosis_raw: string
+  consultation_date: string // ISO date
+  symptoms: string[] // initial symptoms associated with this case
+}
+
 // Medication type for display within a case
 export interface Medication {
   id: string

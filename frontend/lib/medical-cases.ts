@@ -3,6 +3,7 @@ import type {
   MedicalCase,
   MedicalCaseCreate,
   MedicalCaseUpdate,
+  MedicalCaseEditData,
   Medication,
   DiaryEntry,
   DiaryEntryCreate,
@@ -39,6 +40,20 @@ export function updateMedicalCase(
 
 export function deleteMedicalCase(id: string): Promise<void> {
   return apiFetch<void>(`/medical-cases/${id}`, { method: "DELETE" })
+}
+
+export function editMedicalCase(
+  id: string,
+  data: MedicalCaseEditData
+): Promise<MedicalCase> {
+  return apiFetch<MedicalCase>(`/medical-cases/${id}/edit`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  })
+}
+
+export function getCaseSymptomsForEdit(caseId: string): Promise<string[]> {
+  return apiFetch<string[]>(`/medical-cases/${caseId}/symptoms`)
 }
 
 export function getMedicationsForCase(caseId: string): Promise<Medication[]> {
