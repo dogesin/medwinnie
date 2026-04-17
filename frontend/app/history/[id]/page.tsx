@@ -218,7 +218,7 @@ export default function CaseDetailPage({
             </Card>
 
             {/* Accordion */}
-            <Accordion openMultiple defaultValue={[]}>
+            <Accordion defaultValue={[]}>
               {medicalCase.source_type === "upload_photo" && (
                 <AccordionItem value="receta" className="border rounded-xl mb-2 px-1 not-last:border-b">
                   <AccordionTrigger className="px-3 hover:no-underline">
