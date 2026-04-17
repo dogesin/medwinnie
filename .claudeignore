@@ -1,0 +1,9 @@
+        node_modules/
+        .next/
+        .git/
+        !.nativa/blueprints/
+        build/
+        dist/
+        public/assets/
+        *.log
+        

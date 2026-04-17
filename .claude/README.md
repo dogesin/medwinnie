@@ -1,0 +1,1 @@
+# Nativa Blueprints Architecture blueprints are stored in `.nativa/blueprints/`.
