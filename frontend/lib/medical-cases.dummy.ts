@@ -4,6 +4,7 @@ import type {
   MedicalCaseUpdate,
   Medication,
   DiaryEntry,
+  DiaryEntryCreate,
 } from "@/types/medical-case"
 
 // ---------------------------------------------------------------------------
@@ -320,4 +321,20 @@ export async function getDiaryEntriesForCase(
 ): Promise<DiaryEntry[]> {
   await new Promise((r) => setTimeout(r, 200))
   return DUMMY_DIARY_ENTRIES.filter((d) => d.case_id === caseId)
+}
+
+export async function createDiaryEntry(
+  data: DiaryEntryCreate
+): Promise<DiaryEntry> {
+  await new Promise((r) => setTimeout(r, 800))
+  return {
+    id: `diary-${Date.now()}`,
+    case_id: data.case_id,
+    user_id: "user-1",
+    health_status: data.health_status,
+    symptoms: data.symptoms ?? null,
+    note: data.note ?? null,
+    entry_date: data.entry_date,
+    created_at: new Date().toISOString(),
+  }
 }

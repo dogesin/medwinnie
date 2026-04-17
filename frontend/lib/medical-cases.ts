@@ -5,6 +5,7 @@ import type {
   MedicalCaseUpdate,
   Medication,
   DiaryEntry,
+  DiaryEntryCreate,
 } from "@/types/medical-case"
 
 // TODO: wire up after backend is ready. Hooks currently import from .dummy.ts
@@ -46,4 +47,11 @@ export function getMedicationsForCase(caseId: string): Promise<Medication[]> {
 
 export function getDiaryEntriesForCase(caseId: string): Promise<DiaryEntry[]> {
   return apiFetch<DiaryEntry[]>(`/medical-cases/${caseId}/diary-entries`)
+}
+
+export function createDiaryEntry(data: DiaryEntryCreate): Promise<DiaryEntry> {
+  return apiFetch<DiaryEntry>(`/medical-cases/${data.case_id}/diary-entries`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  })
 }

@@ -61,3 +61,11 @@ export interface DiaryEntry {
   entry_date: string
   created_at: string
 }
+
+export interface DiaryEntryCreate {
+  case_id: string
+  health_status: HealthStatus
+  symptoms?: string[]
+  note?: string
+  entry_date: string
+}
