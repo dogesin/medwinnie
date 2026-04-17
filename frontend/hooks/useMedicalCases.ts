@@ -62,12 +62,11 @@ export function useMedicalCases(options: UseMedicalCasesOptions = {}) {
 
   const counts = useMemo(() => {
     const total = items.length
-    const enTratamiento = items.filter(
-      (c) => c.status === "en_tratamiento"
-    ).length
+    const borrador = items.filter((c) => c.status === "borrador").length
+    const enTratamiento = items.filter((c) => c.status === "en_tratamiento").length
     const completado = items.filter((c) => c.status === "completado").length
     const archivado = items.filter((c) => c.status === "archivado").length
-    return { total, enTratamiento, completado, archivado }
+    return { total, borrador, enTratamiento, completado, archivado }
   }, [items])
 
   return { items: filtered, allItems: items, isLoading, error, refresh, counts }

@@ -6,7 +6,6 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
-import { SiteHeader } from "@/components/site-header";
 
 const nunito = Nunito({
   variable: "--font-sans",
@@ -46,7 +45,6 @@ export default function RootLayout({
             <SidebarProvider>
               <AppSidebar />
               <SidebarInset>
-                <SiteHeader />
                 <div className="flex flex-1 flex-col">{children}</div>
               </SidebarInset>
             </SidebarProvider>

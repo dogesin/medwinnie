@@ -22,6 +22,8 @@ interface CaseDetailHeaderProps {
 
 function statusConfig(status: CaseStatus) {
   switch (status) {
+    case "borrador":
+      return { label: "Borrador", variant: "outline" as const }
     case "en_tratamiento":
       return { label: "En tratamiento", variant: "default" as const }
     case "completado":

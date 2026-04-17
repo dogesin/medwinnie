@@ -1,7 +1,7 @@
 // Types derived from database.json — medical_cases table
 // Enums: case_status, health_status
 
-export type CaseStatus = "en_tratamiento" | "completado" | "archivado"
+export type CaseStatus = "borrador" | "en_tratamiento" | "completado" | "archivado"
 export type HealthStatus = "mejor" | "igual" | "peor"
 
 export interface MedicalCase {

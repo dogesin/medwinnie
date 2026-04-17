@@ -10,6 +10,7 @@ interface HistoryFiltersProps {
   onChange: (value: FilterValue) => void
   counts: {
     total: number
+    borrador: number
     enTratamiento: number
     completado: number
     archivado: number
@@ -18,6 +19,7 @@ interface HistoryFiltersProps {
 
 const filters: { value: FilterValue; label: string; countKey: keyof HistoryFiltersProps["counts"] }[] = [
   { value: "todos", label: "Todos", countKey: "total" },
+  { value: "borrador", label: "Borradores", countKey: "borrador" },
   { value: "en_tratamiento", label: "En tratamiento", countKey: "enTratamiento" },
   { value: "completado", label: "Completados", countKey: "completado" },
   { value: "archivado", label: "Archivados", countKey: "archivado" },

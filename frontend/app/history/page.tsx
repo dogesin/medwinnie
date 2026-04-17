@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
+import { ArrowLeft } from "lucide-react"
 import { useMedicalCases } from "@/hooks/useMedicalCases"
 import { CaseCard } from "@/components/history/CaseCard"
 import { HistorySearchBar } from "@/components/history/HistorySearchBar"
@@ -25,6 +27,12 @@ export default function HistoryPage() {
       <div className="flex flex-col gap-5">
         {/* Title */}
         <div>
+          <Link
+            href="/"
+            className="mb-3 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="size-4" /> Inicio
+          </Link>
           <h1 className="text-2xl font-bold tracking-tight">Mi Historial</h1>
           <p className="text-sm text-muted-foreground mt-1">
             {counts.total}{" "}

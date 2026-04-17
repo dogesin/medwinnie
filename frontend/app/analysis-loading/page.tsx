@@ -100,7 +100,7 @@ export default function AnalysisLoadingPage() {
         {/* Bottom CTA — only visible when complete */}
         <div className="sticky bottom-0 border-t border-border bg-background/95 px-0 py-4 backdrop-blur-sm">
           {isComplete ? (
-            <Link href="/result" className="block">
+            <Link href="/history/case-draft" className="block">
               <Button className="w-full" size="lg">
                 <Sparkles data-icon="inline-start" />
                 Ver mi explicación

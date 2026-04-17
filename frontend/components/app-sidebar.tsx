@@ -64,6 +64,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           size="sm"
           className="w-full justify-start gap-2 rounded-lg text-sm"
           render={<Link href="/nueva-consulta" />}
+          nativeButton={false}
         >
           <Plus className="size-4" />
           Nuevo Caso
