@@ -1,6 +1,6 @@
 "use client"
 
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { cn } from "@/lib/utils"
 import type { CaseStatus } from "@/types/medical-case"
 
 type FilterValue = CaseStatus | "todos"
@@ -16,43 +16,44 @@ interface HistoryFiltersProps {
   }
 }
 
+const filters: { value: FilterValue; label: string; countKey: keyof HistoryFiltersProps["counts"] }[] = [
+  { value: "todos", label: "Todos", countKey: "total" },
+  { value: "en_tratamiento", label: "En tratamiento", countKey: "enTratamiento" },
+  { value: "completado", label: "Completados", countKey: "completado" },
+  { value: "archivado", label: "Archivados", countKey: "archivado" },
+]
+
 export function HistoryFilters({
   value,
   onChange,
   counts,
 }: HistoryFiltersProps) {
   return (
-    <ToggleGroup
-      value={[value]}
-      onValueChange={(v: string[]) => {
-        // Prevent deselecting — default back to "todos"
-        const selected = v[0] as FilterValue | undefined
-        onChange(selected ?? "todos")
-      }}
-      className="justify-start flex-wrap"
-    >
-      <ToggleGroupItem value="todos" className="gap-1.5 text-sm">
-        Todos
-        <span className="text-xs text-muted-foreground">({counts.total})</span>
-      </ToggleGroupItem>
-      <ToggleGroupItem value="en_tratamiento" className="gap-1.5 text-sm">
-        En tratamiento
-        <span className="text-xs text-muted-foreground">
-          ({counts.enTratamiento})
-        </span>
-      </ToggleGroupItem>
-      <ToggleGroupItem value="completado" className="gap-1.5 text-sm">
-        Completados
-        <span className="text-xs text-muted-foreground">
-          ({counts.completado})
-        </span>
-      </ToggleGroupItem>
-      <ToggleGroupItem value="archivado" className="gap-1.5 text-sm">
-        Archivados
-        <span className="text-xs text-muted-foreground">
-          ({counts.archivado})
-        </span>
-      </ToggleGroupItem>
-    </ToggleGroup>
+    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+      {filters.map((filter) => (
+        <button
+          key={filter.value}
+          onClick={() => onChange(filter.value)}
+          className={cn(
+            "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
+            value === filter.value
+              ? "bg-primary text-primary-foreground shadow-sm"
+              : "bg-muted/60 text-muted-foreground hover:bg-muted"
+          )}
+        >
+          {filter.label}
+          <span
+            className={cn(
+              "text-[11px]",
+              value === filter.value
+                ? "text-primary-foreground/70"
+                : "text-muted-foreground/60"
+            )}
+          >
+            {counts[filter.countKey]}
+          </span>
+        </button>
+      ))}
+    </div>
   )
 }

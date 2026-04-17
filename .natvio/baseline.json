@@ -1,0 +1,101 @@
+{
+  "version": "1.0",
+  "created_at": "2026-04-17T17:50:32.746098",
+  "project_root": "/Users/gabrieljasso/Desktop/medwinnie",
+  "backend": {
+    "functions": {},
+    "endpoints": {},
+    "tables": {},
+    "integrations": {},
+    "schemas": {},
+    "utils": {
+      "core.security.decode_access_token": {
+        "file": "app/core/security.py",
+        "line": 27,
+        "params": [
+          "token: str"
+        ],
+        "hash": "cdd1556f12532feb"
+      },
+      "core.security.create_access_token": {
+        "file": "app/core/security.py",
+        "line": 19,
+        "params": [
+          "subject: str | int",
+          "expires_delta: timedelta | None = None"
+        ],
+        "hash": "bd0a51c257258273"
+      },
+      "core.security.verify_password": {
+        "file": "app/core/security.py",
+        "line": 15,
+        "params": [
+          "plain: str",
+          "hashed: str"
+        ],
+        "hash": "d9353cbbebcf7f01"
+      },
+      "core.security.hash_password": {
+        "file": "app/core/security.py",
+        "line": 11,
+        "params": [
+          "password: str"
+        ],
+        "hash": "5547864df3c72a9a"
+      },
+      "core.dependencies.get_db": {
+        "file": "app/core/dependencies.py",
+        "line": 8,
+        "params": [],
+        "hash": "df1a185d16d57728"
+      },
+      "shared.base_repository.delete": {
+        "file": "app/shared/base_repository.py",
+        "line": 38,
+        "params": [
+          "id: int"
+        ],
+        "hash": "7289684d1927f2d8"
+      },
+      "shared.base_repository.update": {
+        "file": "app/shared/base_repository.py",
+        "line": 28,
+        "params": [
+          "id: int",
+          "data: dict"
+        ],
+        "hash": "20867a0cf0d55844"
+      },
+      "shared.base_repository.create": {
+        "file": "app/shared/base_repository.py",
+        "line": 21,
+        "params": [
+          "data: dict"
+        ],
+        "hash": "6480ff464a5bf56a"
+      },
+      "shared.base_repository.get_all": {
+        "file": "app/shared/base_repository.py",
+        "line": 18,
+        "params": [
+          "skip: int = 0",
+          "limit: int = 100"
+        ],
+        "hash": "90c041aa67f146c6"
+      },
+      "shared.base_repository.get_by_id": {
+        "file": "app/shared/base_repository.py",
+        "line": 15,
+        "params": [
+          "id: int"
+        ],
+        "hash": "3d68422076f0bad6"
+      }
+    }
+  },
+  "frontend": {
+    "components": {},
+    "pages": {},
+    "hooks": {}
+  }
+}

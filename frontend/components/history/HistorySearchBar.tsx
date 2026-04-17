@@ -11,13 +11,13 @@ interface HistorySearchBarProps {
 export function HistorySearchBar({ value, onChange }: HistorySearchBarProps) {
   return (
     <div className="relative">
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
       <Input
         type="search"
         placeholder="Buscar diagnóstico..."
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="pl-10"
+        className="pl-10 rounded-xl bg-muted/40 border-transparent focus:border-primary/30 focus:bg-background"
       />
     </div>
   )

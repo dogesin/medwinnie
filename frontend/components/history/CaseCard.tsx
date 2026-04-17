@@ -1,21 +1,10 @@
 "use client"
 
 import Link from "next/link"
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import {
   Calendar,
-  FileText,
-  MessageCircle,
-  BookOpen,
   ChevronRight,
   TrendingUp,
   Minus,
@@ -32,37 +21,24 @@ interface CaseCardProps {
 function statusConfig(status: CaseStatus) {
   switch (status) {
     case "en_tratamiento":
-      return { label: "En tratamiento", variant: "default" as const }
+      return { label: "En tratamiento", className: "bg-primary/10 text-primary border-primary/20" }
     case "completado":
-      return { label: "Completado", variant: "secondary" as const }
+      return { label: "Completado", className: "bg-emerald-50 text-emerald-700 border-emerald-200" }
     case "archivado":
-      return { label: "Archivado", variant: "outline" as const }
+      return { label: "Archivado", className: "bg-muted text-muted-foreground border-border" }
   }
 }
 
-function healthIcon(status: HealthStatus | null) {
+function healthIndicator(status: HealthStatus | null) {
   switch (status) {
     case "mejor":
-      return <TrendingUp className="text-emerald-600" />
+      return { icon: TrendingUp, label: "Mejor", className: "text-emerald-600" }
     case "igual":
-      return <Minus className="text-amber-500" />
+      return { icon: Minus, label: "Igual", className: "text-amber-500" }
     case "peor":
-      return <TrendingDown className="text-red-500" />
+      return { icon: TrendingDown, label: "Peor", className: "text-red-500" }
     default:
       return null
-  }
-}
-
-function healthLabel(status: HealthStatus | null) {
-  switch (status) {
-    case "mejor":
-      return "Mejor"
-    case "igual":
-      return "Igual"
-    case "peor":
-      return "Peor"
-    default:
-      return "Sin registro"
   }
 }
 
@@ -74,103 +50,59 @@ function formatDate(dateStr: string) {
   }).format(new Date(dateStr))
 }
 
-function formatRelativeDate(dateStr: string | null) {
-  if (!dateStr) return null
-  const diff = Date.now() - new Date(dateStr).getTime()
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-  if (days === 0) return "Hoy"
-  if (days === 1) return "Ayer"
-  if (days < 7) return `Hace ${days} días`
-  if (days < 30) return `Hace ${Math.floor(days / 7)} semanas`
-  return formatDate(dateStr)
-}
-
 export function CaseCard({ medicalCase }: CaseCardProps) {
   const statusCfg = statusConfig(medicalCase.status)
+  const health = healthIndicator(medicalCase.current_health_status)
 
   return (
     <Link href={`/history/${medicalCase.id}`} className="block group">
-      <Card className="transition-all duration-200 hover:shadow-md hover:border-primary/30 group-focus-visible:ring-2 group-focus-visible:ring-ring">
-        <CardHeader className="pb-3">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex-1 min-w-0">
-              <CardTitle className="text-base font-semibold leading-snug truncate">
-                {medicalCase.diagnosis}
-              </CardTitle>
-              <CardDescription className="flex items-center gap-1.5 mt-1">
-                <Calendar className="shrink-0" />
-                {formatDate(medicalCase.consultation_date)}
-              </CardDescription>
-            </div>
-            <Badge variant={statusCfg.variant}>{statusCfg.label}</Badge>
-          </div>
-        </CardHeader>
-
-        <CardContent className="pb-3">
-          {/* Health status + source type */}
-          <div className="flex items-center gap-4 text-sm">
-            {medicalCase.current_health_status ? (
-              <div className="flex items-center gap-1.5">
-                {healthIcon(medicalCase.current_health_status)}
-                <span className="text-muted-foreground">
-                  {healthLabel(medicalCase.current_health_status)}
-                </span>
-              </div>
-            ) : (
-              <span className="text-muted-foreground text-xs italic">
-                Sin actualización
-              </span>
-            )}
-
-            <div className="flex items-center gap-1 text-muted-foreground">
-              {medicalCase.source_type === "upload_photo" ? (
-                <Camera className="shrink-0" />
-              ) : (
-                <PenLine className="shrink-0" />
-              )}
-              <span className="text-xs">
-                {medicalCase.source_type === "upload_photo"
-                  ? "Foto"
-                  : "Texto"}
-              </span>
-            </div>
-          </div>
-
-          {/* Stats row */}
-          <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <BookOpen className="shrink-0" />
-              <span>
-                {medicalCase.diary_entry_count}{" "}
-                {medicalCase.diary_entry_count === 1 ? "entrada" : "entradas"}
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <MessageCircle className="shrink-0" />
-              <span>
-                {medicalCase.question_count}{" "}
-                {medicalCase.question_count === 1 ? "pregunta" : "preguntas"}
-              </span>
-            </div>
-            {medicalCase.last_diary_entry_at && (
-              <div className="flex items-center gap-1 ml-auto">
-                <FileText className="shrink-0" />
-                <span>{formatRelativeDate(medicalCase.last_diary_entry_at)}</span>
-              </div>
-            )}
-          </div>
-        </CardContent>
-
-        <CardFooter className="pt-0">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="ml-auto text-primary hover:text-primary"
+      <Card className="relative overflow-hidden rounded-xl p-4 transition-all duration-200 hover:shadow-md hover:border-primary/20">
+        {/* Top row: diagnosis + status */}
+        <div className="flex items-start justify-between gap-3 pr-6">
+          <h3 className="text-base font-semibold leading-snug">
+            {medicalCase.diagnosis}
+          </h3>
+          <Badge
+            variant="outline"
+            className={`shrink-0 text-[11px] font-medium ${statusCfg.className}`}
           >
-            Ver detalle
-            <ChevronRight data-icon="inline-end" />
-          </Button>
-        </CardFooter>
+            {statusCfg.label}
+          </Badge>
+        </div>
+
+        {/* Meta row */}
+        <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1">
+            <Calendar className="size-3" />
+            {formatDate(medicalCase.consultation_date)}
+          </span>
+
+          <span className="flex items-center gap-1">
+            {medicalCase.source_type === "upload_photo" ? (
+              <Camera className="size-3" />
+            ) : (
+              <PenLine className="size-3" />
+            )}
+            {medicalCase.source_type === "upload_photo" ? "Foto" : "Texto"}
+          </span>
+
+          {health && (
+            <span className={`flex items-center gap-1 font-medium ${health.className}`}>
+              <health.icon className="size-3" />
+              {health.label}
+            </span>
+          )}
+
+          {medicalCase.diary_entry_count > 0 && (
+            <span>
+              {medicalCase.diary_entry_count}{" "}
+              {medicalCase.diary_entry_count === 1 ? "entrada" : "entradas"}
+            </span>
+          )}
+        </div>
+
+        {/* Arrow */}
+        <ChevronRight className="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground/0 transition-all group-hover:text-muted-foreground" />
       </Card>
     </Link>
   )
